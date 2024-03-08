@@ -33,14 +33,13 @@
 
       const checkIfExpensesAreEmpty = (expenses) => {
         //Check if the expenses data is empty
-        if (Object.keys(expenses).length === 0) return true;
-        return false;
+        return Object.keys(expenses).length === 0;
       };
 
       const getFirstWeekOfExpenses = (month, monthData) => {
         let firstWeekOfTheMonth = {};
 
-        //Check what is the first Sunday of the month
+        //Check what day is the first Sunday of the month
         const firstSundayOfTheMonth = (date) => {
           const year = new Date(date).getFullYear();
           const month = new Date(date).getMonth() + 1;
@@ -116,9 +115,11 @@
         return result;
       };
 
+      const mediana = getMedianOfFirstWeekExpenses(expenses);
+
       console.log(
-        getMedianOfFirstWeekExpenses(expenses)
-          ? getMedianOfFirstWeekExpenses(expenses)
+        mediana
+          ? mediana
           : "The expenses data is empty. Please provide some data."
       );
     </script>
