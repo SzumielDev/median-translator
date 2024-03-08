@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const expenses = {
+        "2023-01": {
+          "01": {
+            food: [22.11, 43, 11.72, 2.2, 36.29, 2.5, 19],
+            fuel: [210.22],
+          },
+          "09": {
+            food: [11.9],
+            fuel: [190.22],
+          },
+        },
+        "2023-03": {
+          "07": {
+            food: [20, 11.9, 30.2, 11.9],
+          },
+          "04": {
+            food: [10.2, 11.5, 2.5],
+            fuel: [],
+          },
+        },
+        "2023-04": {},
+        "2023-05": {
+          "07": {
+            food: [20, 11.9, 30.2, 11.9],
+            fuel: [20, 11.9],
+          },
+          "02": {
+            food: [27.2, 19.9],
+            fuel: [203, 112.9],
+          },
+          "04": {
+            food: [10.2, 11.5, 2.5],
+            fuel: [5],
+          },
+        },
+        "2023-06": {
+          "07": {
+            food: [20, 11.9, 30.2, 11.9],
+            fuel: [20, 11.9],
+          },
+          "02": {
+            food: [27.2, 19.9],
+            fuel: [203, 112.9],
+          },
+          "04": {
+            food: [10.2, 11.5, 2.5],
+            fuel: [5],
+          },
+          20: {
+            food: [10.2, 11.5, 2.5],
+            fuel: [5],
+          },
+          3: {
+            food: [10.2, 11.5, 2.5, 10, 50, 20, 5],
+            fuel: [5],
+          },
+        },
+      };
+
+      const checkIfExpensesAreEmpty = (expenses) => {
+        //Check if the expenses data is empty
+        if (Object.keys(expenses).length === 0) {
+          console.log("The expenses data is empty. Please provide some data.");
+          return true;
+        }
+        return false;
+      };
+
+      const getFirstWeekOfExpenses = (month, monthData) => {
+        let firstWeekOfTheMonth = {};
+
+        //Check what is the first Sunday of the month
+        const firstSundayOfTheMonth = (date) => {
+          const year = new Date(date).getFullYear();
+          const month = new Date(date).getMonth() + 1;
+          const firstDayOfTheMonth = new Date(year, month - 1, 1);
+          if (firstDayOfTheMonth.getDay() === 0)
+            return firstDayOfTheMonth.getDate();
+          const move = 7 - firstDayOfTheMonth.getDay();
+          const firstSunday = new Date(year, month - 1, 1 + move);
+          return firstSunday.getDate();
+        };
+
+        const firstSunday = firstSundayOfTheMonth(month);
+
+        //Check if the day is before the first Sunday of the month
+        for (const day in monthData) {
+          if (parseInt(day) <= firstSunday) {
+            firstWeekOfTheMonth[day] = monthData[day];
+          }
+        }
+
+        //return the first week of the month
+        return firstWeekOfTheMonth;
+      };
+
+      const getMedianOfFirstWeekExpenses = (expenses) => {
+        if (checkIfExpensesAreEmpty(expenses)) return;
+        let result = [];
+
+        for (const month in expenses) {
+          if (Object.keys(expenses[month]).length === 0) {
+            continue;
+          }
+
+          //Get the first week of the month
+          const firstWeekOfExpenses = getFirstWeekOfExpenses(
+            month,
+            expenses[month]
+          );
+
+          //Get the sum of expenses for the first week
+          const sumOfExpensesByWeek = Object.values(
+            firstWeekOfExpenses
+          ).flatMap((week) => {
+            return Object.values(week).flatMap((expense) => {
+              return expense;
+            });
+          });
+
+          //Get the median of the first week expenses
+          const median = (arr) => {
+            const mid = Math.floor(arr.length / 2),
+              nums = [...arr].sort((a, b) => a - b);
+            return arr.length % 2 !== 0
+              ? nums[mid]
+              : (nums[mid - 1] + nums[mid]) / 2;
+          };
+
+          //Return array with objects. (month, the sum of expenses and details)
+          result = [
+            ...result,
+            {
+              month: month,
+              median: median(sumOfExpensesByWeek),
+              details: {
+                firstWeekExpenses: firstWeekOfExpenses,
+                allFirstWeekExpenses: sumOfExpensesByWeek,
+                expenses: expenses[month],
+              },
+            },
+          ];
+        }
+        return result;
+      };
+
+      console.log(getMedianOfFirstWeekExpenses(expenses));
+    </script>
+  </body>
+</html>
