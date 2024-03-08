@@ -12,6 +12,7 @@
           "01": {
             food: [22.11, 43, 11.72, 2.2, 36.29, 2.5, 19],
             fuel: [210.22],
+            car: [510.22, 600],
           },
           "09": {
             food: [11.9],
@@ -28,50 +29,11 @@
           },
         },
         "2023-04": {},
-        "2023-05": {
-          "07": {
-            food: [20, 11.9, 30.2, 11.9],
-            fuel: [20, 11.9],
-          },
-          "02": {
-            food: [27.2, 19.9],
-            fuel: [203, 112.9],
-          },
-          "04": {
-            food: [10.2, 11.5, 2.5],
-            fuel: [5],
-          },
-        },
-        "2023-06": {
-          "07": {
-            food: [20, 11.9, 30.2, 11.9],
-            fuel: [20, 11.9],
-          },
-          "02": {
-            food: [27.2, 19.9],
-            fuel: [203, 112.9],
-          },
-          "04": {
-            food: [10.2, 11.5, 2.5],
-            fuel: [5],
-          },
-          20: {
-            food: [10.2, 11.5, 2.5],
-            fuel: [5],
-          },
-          3: {
-            food: [10.2, 11.5, 2.5, 10, 50, 20, 5],
-            fuel: [5],
-          },
-        },
       };
 
       const checkIfExpensesAreEmpty = (expenses) => {
         //Check if the expenses data is empty
-        if (Object.keys(expenses).length === 0) {
-          console.log("The expenses data is empty. Please provide some data.");
-          return true;
-        }
+        if (Object.keys(expenses).length === 0) return true;
         return false;
       };
 
@@ -105,6 +67,7 @@
 
       const getMedianOfFirstWeekExpenses = (expenses) => {
         if (checkIfExpensesAreEmpty(expenses)) return;
+
         let result = [];
 
         for (const month in expenses) {
@@ -136,7 +99,7 @@
               : (nums[mid - 1] + nums[mid]) / 2;
           };
 
-          //Return array with objects. (month, the sum of expenses and details)
+          //Return array with objects. (month, the collection of expenses and details)
           result = [
             ...result,
             {
@@ -153,7 +116,11 @@
         return result;
       };
 
-      console.log(getMedianOfFirstWeekExpenses(expenses));
+      console.log(
+        getMedianOfFirstWeekExpenses(expenses)
+          ? getMedianOfFirstWeekExpenses(expenses)
+          : "The expenses data is empty. Please provide some data."
+      );
     </script>
   </body>
 </html>
