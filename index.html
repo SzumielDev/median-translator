@@ -12,7 +12,6 @@
           "01": {
             food: [22.11, 43, 11.72, 2.2, 36.29, 2.5, 19],
             fuel: [210.22],
-            car: [510.22, 600],
           },
           "09": {
             food: [11.9],
@@ -43,17 +42,17 @@
         const firstSundayOfTheMonth = (date) => {
           const year = new Date(date).getFullYear();
           const month = new Date(date).getMonth() + 1;
-          const firstDayOfTheMonth = new Date(year, month - 1, 1);
-          if (firstDayOfTheMonth.getDay() === 0)
-            return firstDayOfTheMonth.getDate();
-          const move = 7 - firstDayOfTheMonth.getDay();
-          const firstSunday = new Date(year, month - 1, 1 + move);
-          return firstSunday.getDate();
+          let data = new Date(year, month - 1, 1);
+
+          while (data.getDay() !== 0) {
+            data.setDate(data.getDate() + 1);
+          }
+
+          return data;
         };
 
-        const firstSunday = firstSundayOfTheMonth(month);
+        const firstSunday = firstSundayOfTheMonth(month).getDate();
 
-        //Check if the day is before the first Sunday of the month
         for (const day in monthData) {
           if (parseInt(day) <= firstSunday) {
             firstWeekOfTheMonth[day] = monthData[day];
@@ -64,10 +63,10 @@
         return firstWeekOfTheMonth;
       };
 
-      const getMedianOfFirstWeekExpenses = (expenses) => {
-        if (checkIfExpensesAreEmpty(expenses)) return;
-
-        let result = [];
+      const getMedianOfFirstWeeksExpenses = (expenses) => {
+        let result = null;
+        let allExpenses = [];
+        if (checkIfExpensesAreEmpty(expenses)) return result;
 
         for (const month in expenses) {
           if (Object.keys(expenses[month]).length === 0) {
@@ -80,8 +79,8 @@
             expenses[month]
           );
 
-          //Get the sum of expenses for the first week
-          const sumOfExpensesByWeek = Object.values(
+          //Get the collection of expenses for the first week
+          const collectionOfExpensesByWeek = Object.values(
             firstWeekOfExpenses
           ).flatMap((week) => {
             return Object.values(week).flatMap((expense) => {
@@ -89,39 +88,21 @@
             });
           });
 
-          //Get the median of the first week expenses
-          const median = (arr) => {
-            const mid = Math.floor(arr.length / 2),
-              nums = [...arr].sort((a, b) => a - b);
-            return arr.length % 2 !== 0
-              ? nums[mid]
-              : (nums[mid - 1] + nums[mid]) / 2;
-          };
-
-          //Return array with objects. (month, the collection of expenses and details)
-          result = [
-            ...result,
-            {
-              month: month,
-              median: median(sumOfExpensesByWeek),
-              details: {
-                firstWeekExpenses: firstWeekOfExpenses,
-                allFirstWeekExpenses: sumOfExpensesByWeek,
-                expenses: expenses[month],
-              },
-            },
-          ];
+          allExpenses.push(...collectionOfExpensesByWeek);
         }
-        return result;
+
+        const getMedianFromArray = (arr) => {
+          const mid = Math.floor(arr.length / 2),
+            nums = [...arr].sort((a, b) => a - b);
+          return arr.length % 2 !== 0
+            ? nums[mid]
+            : (nums[mid - 1] + nums[mid]) / 2;
+        };
+
+        return getMedianFromArray(allExpenses);
       };
 
-      const mediana = getMedianOfFirstWeekExpenses(expenses);
-
-      console.log(
-        mediana
-          ? mediana
-          : "The expenses data is empty. Please provide some data."
-      );
+      console.log(getMedianOfFirstWeeksExpenses(expenses));
     </script>
   </body>
 </html>
